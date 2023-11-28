@@ -5,6 +5,10 @@ import { useState } from "react";
 import { Loader2, Lock } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { useConfettiStore } from "@/hooks/use-confetti-store";
+import axios from "axios";
 
 interface VideoPlayerProps {
   playbackId: string;
@@ -25,7 +29,35 @@ export const VideoPlayer = ({
   completeOnEnd,
   title,
 }: VideoPlayerProps) => {
+  const router = useRouter();
+  const confetti = useConfettiStore();
   const [isReady, setIsReady] = useState(false);
+
+  const onEnd = async () => {
+    try {
+      if (completeOnEnd) {
+        await axios.put(
+          `/api/courses/${courseId}/chapters/${chapterId}/progress`,
+          {
+            isCompleted: true,
+          }
+        );
+
+        if (!nextChapterId) {
+          confetti.onOpen();
+        }
+
+        toast.success("Progress updated");
+        router.refresh();
+
+        if (nextChapterId) {
+          router.push(`/courses/${courseId}/chapters/${nextChapterId}`);
+        }
+      }
+    } catch {
+      toast.error("Something went wrong");
+    }
+  };
 
   return (
     <div className="relative aspect-video">
@@ -45,7 +77,7 @@ export const VideoPlayer = ({
           title={title}
           className={cn(!isReady && "hidden")}
           onCanPlay={() => setIsReady(true)}
-          onEnded={() => {}}
+          onEnded={onEnd}
           autoPlay
           playbackId={playbackId}
         />
