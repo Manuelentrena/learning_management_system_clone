@@ -15,10 +15,8 @@ async function main() {
         { name: "Filming" },
       ],
     });
-
-    console.log("Success");
   } catch (error) {
-    console.log("Error seeding the database categories", error);
+    console.error("Error seeding the database categories", error);
   } finally {
     await database.$disconnect();
   }

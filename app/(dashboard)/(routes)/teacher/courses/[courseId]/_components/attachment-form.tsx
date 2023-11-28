@@ -43,7 +43,6 @@ export const AttachmentForm = ({
   };
 
   const onDelete = async (id: string) => {
-    console.log({ id });
     try {
       setDeletingId(id);
       await axios.delete(`/api/courses/${courseId}/attachments/${id}`);

@@ -39,7 +39,6 @@ export async function DELETE(
     }
 
     for (const chapter of course.chapters) {
-      console.log({ chapter });
       if (chapter.muxData?.assetId) {
         try {
           await Video.Assets.del(chapter.muxData.assetId);
@@ -57,7 +56,7 @@ export async function DELETE(
 
     return NextResponse.json(deletedCourse);
   } catch (error) {
-    console.log("[COURSE_ID_DELETE]", error);
+    console.error("[COURSE_ID_DELETE]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
@@ -87,7 +86,7 @@ export async function PATCH(
 
     return NextResponse.json(course);
   } catch (error) {
-    console.log("[COURSE_ID]", error);
+    console.error("[COURSE_ID]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
